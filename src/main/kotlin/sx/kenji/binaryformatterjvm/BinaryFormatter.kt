@@ -101,7 +101,7 @@ class BinaryFormatter(bytearray: ByteArray) {
         } while(record !is MessageEnd)
 
         // Simple consistency check
-        for((id, deferred) in this.deferreds) {
+        for(deferred in this.deferreds.values) {
             if(!deferred.promise.isDone()) {
                 throw Exception("FAILED TO RESOLVE $deferred")
             }
@@ -132,25 +132,12 @@ class BinaryFormatter(bytearray: ByteArray) {
 
     fun reserialize(os: BinaryWriterOutputStream) {
         this.serializationHeaderRecord?.write(os) ?: return
-//        for(library in this.libraries.values) {
-//            library.write(os)
-//        }
-//
+        for(library in this.libraries.values) {
+            library.write(os)
+        }
+
         val entryPoint = this.classes.toSortedMap().values.first()
         entryPoint.write(os)
-
-//        for(record in this.records) {
-////            if(record == entryPoint) {
-////                continue
-////            }
-//            if(record is MemberReference) continue
-//
-//            record.write(os)
-//        }
-
-//        for(deferred in this.deferreds.values) {
-//            deferred.promise.get().write(os)
-//        }
 
         MessageEnd(this.stream).write(os)
     }
