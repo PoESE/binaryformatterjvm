@@ -11,11 +11,11 @@ interface Record {
     fun write(os: BinaryWriterOutputStream)
 }
 
-interface RecordWithObjectId : Record {
+interface RecordWithObjectId: Record {
     val objectId: Int
 }
 
-class R : Record {
+class R: Record {
     override fun create() = this
     override fun write(os: BinaryWriterOutputStream) {}
 }
@@ -30,7 +30,7 @@ class ClassTypeInfo(stream: BinaryReaderInputStream) {
     }
 }
 
-class MemberReference(bf: BinaryFormatter) : Record {
+class MemberReference(bf: BinaryFormatter): Record {
     private val recordTypeEnum = RecordTypeEnumeration.MemberReference
 
     val idRef = bf.stream.readInt32()
@@ -47,7 +47,7 @@ class MemberReference(bf: BinaryFormatter) : Record {
     fun writeValue(os: BinaryWriterOutputStream) = this._promise.get().write(os)
 }
 
-class ObjectNullMultiple256(stream: BinaryReaderInputStream) : Record {
+class ObjectNullMultiple256(stream: BinaryReaderInputStream): Record {
     private val recordTypeEnum = RecordTypeEnumeration.ObjectNullMultiple256
 
     val nullCount = stream.readByte()
@@ -60,7 +60,7 @@ class ObjectNullMultiple256(stream: BinaryReaderInputStream) : Record {
     }
 }
 
-class BinaryObjectString(stream: BinaryReaderInputStream) : RecordWithObjectId {
+class BinaryObjectString(stream: BinaryReaderInputStream): RecordWithObjectId {
     private val recordTypeEnum = RecordTypeEnumeration.BinaryObjectString
 
     override val objectId = stream.readInt32()

@@ -5,7 +5,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
-class BinaryReaderInputStream(buf: ByteArray) : ByteArrayInputStream(buf) {
+class BinaryReaderInputStream(buf: ByteArray): ByteArrayInputStream(buf) {
     fun readByte(): Byte {
         return this.readBytesWrapped(1).get()
     }

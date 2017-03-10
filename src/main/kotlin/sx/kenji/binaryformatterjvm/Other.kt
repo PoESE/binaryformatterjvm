@@ -1,6 +1,6 @@
 package sx.kenji.binaryformatterjvm
 
-class SerializationHeaderRecord(stream: BinaryReaderInputStream) : Record {
+class SerializationHeaderRecord(stream: BinaryReaderInputStream): Record {
     private val recordTypeEnum = RecordTypeEnumeration.SerializedStreamHeader
 
     val rootId = stream.readInt32()
@@ -19,7 +19,7 @@ class SerializationHeaderRecord(stream: BinaryReaderInputStream) : Record {
     }
 }
 
-class BinaryLibrary(stream: BinaryReaderInputStream) : Record {
+class BinaryLibrary(stream: BinaryReaderInputStream): Record {
     private val recordTypeEnum = RecordTypeEnumeration.BinaryLibrary
 
     val libraryId = stream.readInt32()
@@ -34,7 +34,7 @@ class BinaryLibrary(stream: BinaryReaderInputStream) : Record {
     }
 }
 
-class MessageEnd(stream: BinaryReaderInputStream) : Record {
+class MessageEnd(stream: BinaryReaderInputStream): Record {
     private val recordTypeEnum = RecordTypeEnumeration.MessageEnd
 
     override fun create() = this

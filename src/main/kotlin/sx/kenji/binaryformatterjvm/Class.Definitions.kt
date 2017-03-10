@@ -212,7 +212,7 @@ open class SystemClassWithMembersAndTypes(bf: BinaryFormatter): _Class(), Record
     }
 }
 
-class ClassWithMembersAndTypes(bf: BinaryFormatter) : SystemClassWithMembersAndTypes(bf) {
+class ClassWithMembersAndTypes(bf: BinaryFormatter): SystemClassWithMembersAndTypes(bf) {
     override val recordTypeEnum = RecordTypeEnumeration.ClassWithMembersAndTypes
 
     var libraryId: Int = 0

@@ -1,6 +1,6 @@
 package sx.kenji.binaryformatterjvm
 
-class BinaryArray(bf: BinaryFormatter) : RecordWithObjectId {
+class BinaryArray(bf: BinaryFormatter): RecordWithObjectId {
     private val recordTypeEnum = RecordTypeEnumeration.BinaryArray
 
     override val objectId = bf.stream.readInt32()
@@ -103,7 +103,7 @@ class BinaryArray(bf: BinaryFormatter) : RecordWithObjectId {
     }
 }
 
-class ArraySinglePrimitive(stream: BinaryReaderInputStream) : RecordWithObjectId {
+class ArraySinglePrimitive(stream: BinaryReaderInputStream): RecordWithObjectId {
     private val recordTypeEnum = RecordTypeEnumeration.ArraySinglePrimitive
 
     /* ArrayInfo structure start */

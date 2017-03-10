@@ -5,9 +5,9 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets
 
-class BinaryWriterOutputStream : ByteArrayOutputStream() {
+class BinaryWriterOutputStream: ByteArrayOutputStream() {
     fun writeInt32(v: Int) {
-        this.write(java.nio.ByteBuffer.allocate(4).order(java.nio.ByteOrder.LITTLE_ENDIAN).putInt(v).array())
+        this.write(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(v).array())
     }
 
     fun writeString(v: String) {
