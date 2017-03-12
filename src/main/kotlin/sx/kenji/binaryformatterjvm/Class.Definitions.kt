@@ -82,7 +82,7 @@ open class _Class {
     }
 }
 
-class ClassWithId(bf: BinaryFormatter): _Class(), RecordWithObjectId {
+class ClassWithId(bf: BinaryFormatter): _Class(), RecordWithObjectId, RecordWithValues {
     private val recordTypeEnum = RecordTypeEnumeration.ClassWithId
 
     override val objectId = bf.stream.readInt32()
@@ -101,49 +101,28 @@ class ClassWithId(bf: BinaryFormatter): _Class(), RecordWithObjectId {
 
     override fun create(): Any = this.create(this.scwmat)
 
-    fun writeNoValues(os: BinaryWriterOutputStream) {
-        os.writeByte(this.recordTypeEnum.value)
-        os.writeInt32(this.objectId)
-        os.writeInt32(this.metadataId)
-        for(value in this._values) {
-            when(value) {
-                is Record -> value.write(os)
-                else -> os.writePrimitive(value)
-            }
-        }
-    }
-
-    fun writeValues(os: BinaryWriterOutputStream) {
-        for(value in this._values) {
-            if(value is MemberReference) value.writeValue(os)
-        }
-    }
-
-    override fun write(os: BinaryWriterOutputStream) {
+    override fun writeMetadata(os: BinaryWriterOutputStream) {
         os.writeByte(this.recordTypeEnum.value)
         os.writeInt32(this.objectId)
         os.writeInt32(this.metadataId)
 
         for(value in this._values) {
             when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeNoValues(os)
-                is ClassWithId -> value.writeNoValues(os)
+                is RecordWithValues -> value.writeMetadata(os)
                 is Record -> value.write(os)
                 else -> os.writePrimitive(value)
             }
         }
+    }
+
+    override fun writeValues(os: BinaryWriterOutputStream) {
         for(value in this._values) {
-            when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeValues(os)
-                is ClassWithId -> value.writeValues(os)
-                is MemberReference -> value.writeValue(os)
-            }
-            //            if(value is MemberReference) value.writeValue(os)
+            if(value is RecordWithValues) value.writeValues(os)
         }
     }
 }
 
-open class SystemClassWithMembersAndTypes(bf: BinaryFormatter): _Class(), RecordWithObjectId {
+open class SystemClassWithMembersAndTypes(bf: BinaryFormatter): _Class(), RecordWithObjectId, RecordWithValues {
     open protected val recordTypeEnum = RecordTypeEnumeration.SystemClassWithMembersAndTypes
 
     /* ClassInfo structure start */
@@ -164,28 +143,7 @@ open class SystemClassWithMembersAndTypes(bf: BinaryFormatter): _Class(), Record
 
     override fun create(): Any = this.create(this)
 
-    fun writeNoValues(os: BinaryWriterOutputStream) {
-        os.writeByte(this.recordTypeEnum.value)
-        os.writeInt32(this.objectId)
-        os.writeString(this.name)
-        os.writeInt32(this.memberCount)
-        this.memberNames.forEach { os.writeString(it) }
-        this.memberTypeInfo.write(os)
-        for(value in this._values) {
-            when(value) {
-                is Record -> value.write(os)
-                else -> os.writePrimitive(value)
-            }
-        }
-    }
-
-    fun writeValues(os: BinaryWriterOutputStream) {
-        for(value in this._values) {
-            if(value is MemberReference) value.writeValue(os)
-        }
-    }
-
-    override fun write(os: BinaryWriterOutputStream) {
+    override fun writeMetadata(os: BinaryWriterOutputStream) {
         os.writeByte(this.recordTypeEnum.value)
         os.writeInt32(this.objectId)
         os.writeString(this.name)
@@ -195,19 +153,16 @@ open class SystemClassWithMembersAndTypes(bf: BinaryFormatter): _Class(), Record
 
         for(value in this._values) {
             when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeNoValues(os)
-                is ClassWithId -> value.writeNoValues(os)
+                is RecordWithValues -> value.writeMetadata(os)
                 is Record -> value.write(os)
                 else -> os.writePrimitive(value)
             }
         }
+    }
+
+    override fun writeValues(os: BinaryWriterOutputStream) {
         for(value in this._values) {
-            when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeValues(os)
-                is ClassWithId -> value.writeValues(os)
-                is MemberReference -> value.writeValue(os)
-            }
-//            if(value is MemberReference) value.writeValue(os)
+            if(value is RecordWithValues) value.writeValues(os)
         }
     }
 }
@@ -233,19 +188,10 @@ class ClassWithMembersAndTypes(bf: BinaryFormatter): SystemClassWithMembersAndTy
 
         for(value in this._values) {
             when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeNoValues(os)
-                is ClassWithId -> value.writeNoValues(os)
+                is RecordWithValues -> value.writeMetadata(os)
                 is Record -> value.write(os)
                 else -> os.writePrimitive(value)
             }
-        }
-        for(value in this._values) {
-            when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeValues(os)
-                is ClassWithId -> value.writeValues(os)
-                is MemberReference -> value.writeValue(os)
-            }
-            //            if(value is MemberReference) value.writeValue(os)
         }
     }
 }

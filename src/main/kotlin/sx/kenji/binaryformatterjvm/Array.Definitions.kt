@@ -86,18 +86,14 @@ class BinaryArray(bf: BinaryFormatter): RecordWithObjectId {
         for(value in this._values) {
             // TODO: Handle other record types (primitives?)
             when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeNoValues(os)
-                is ClassWithId -> value.writeNoValues(os)
+                is RecordWithValues -> value.writeMetadata(os)
                 is Record -> value.write(os)
             }
-//            val record = value as Record
-//            record.write(os)
         }
 
         for(value in this._values) {
             when(value) {
-                is SystemClassWithMembersAndTypes -> value.writeValues(os)
-                is ClassWithId -> value.writeValues(os)
+                is RecordWithValues -> value.writeValues(os)
             }
         }
     }

@@ -11,6 +11,16 @@ interface Record {
     fun write(os: BinaryWriterOutputStream)
 }
 
+interface RecordWithValues: Record {
+    fun writeMetadata(os: BinaryWriterOutputStream)
+    fun writeValues(os: BinaryWriterOutputStream)
+
+    override fun write(os: BinaryWriterOutputStream) {
+        this.writeMetadata(os)
+        this.writeValues(os)
+    }
+}
+
 interface RecordWithObjectId: Record {
     val objectId: Int
 }
@@ -30,7 +40,7 @@ class ClassTypeInfo(stream: BinaryReaderInputStream) {
     }
 }
 
-class MemberReference(bf: BinaryFormatter): Record {
+class MemberReference(bf: BinaryFormatter): RecordWithValues {
     private val recordTypeEnum = RecordTypeEnumeration.MemberReference
 
     val idRef = bf.stream.readInt32()
@@ -39,12 +49,12 @@ class MemberReference(bf: BinaryFormatter): Record {
 
     override fun create() = this._promise.get().create()
 
-    override fun write(os: BinaryWriterOutputStream) {
+    override fun writeMetadata(os: BinaryWriterOutputStream) {
         os.writeByte(this.recordTypeEnum.value)
         os.writeInt32(this.idRef)
     }
 
-    fun writeValue(os: BinaryWriterOutputStream) = this._promise.get().write(os)
+    override fun writeValues(os: BinaryWriterOutputStream) = this._promise.get().write(os)
 }
 
 class ObjectNullMultiple256(stream: BinaryReaderInputStream): Record {
