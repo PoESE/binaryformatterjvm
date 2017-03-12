@@ -129,9 +129,6 @@ class ArraySinglePrimitive(stream: BinaryReaderInputStream): RecordWithObjectId 
         os.writeInt32(this._values.size)
         os.writeByte(this.primitiveTypeEnum.value)
 
-        for(value in this._values) {
-            // TODO: Handle other primitives
-            os.writeInt32(value as Int)
-        }
+        this._values.forEach { os.writePrimitive(it) }
     }
 }
